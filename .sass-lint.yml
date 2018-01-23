@@ -1,0 +1,40 @@
+#########################
+## Sample Sass Lint File
+#########################
+# Linter Options
+options:
+  merge-default-rules: false
+  formatter: visualstudio
+  max-warnings: 50
+# File Options
+files:
+  include: 'client/stylesheets/**/*.s+(a|c)ss'
+  ignore:
+    - 'client/stylesheets/regexr.scss'
+# Rule Configuration
+rules:
+  brace-style: 2
+  declarations-before-nesting: 2
+  empty-line-between-blocks: 2
+  indentation:
+    - 2
+    -
+      size: 2
+  no-debug: 2
+  no-duplicate-properties: 2
+  no-empty-rulesets: 2
+  no-important: 2
+  no-invalid-hex: 2
+  no-trailing-whitespace: 2
+  no-trailing-zero: 2
+  no-warn: 2
+  space-after-bang: 2
+  space-after-colon: 2
+  space-after-comma: 2
+  space-around-operator: 2
+  space-before-bang: 2
+  space-before-brace: 2
+  space-before-colon: 2
+  space-between-parens: 2
+  trailing-semicolon: 2
+  zero-unit: 2
