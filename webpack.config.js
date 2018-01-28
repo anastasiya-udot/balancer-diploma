@@ -2,6 +2,7 @@
 
 var path = require('path');
 var webpack = require('webpack');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './public/js/main.js',
@@ -11,7 +12,19 @@ module.exports = {
     filename: 'build.js'
   },
   module: {
-    rules: [{
+    rules: [
+      {
+        test: /\.(png|jpg|svg)$/, 
+        use: [{
+            loader: "file-loader",
+            options:  {
+                limit: 10000,
+                emitFile: true,
+                outputPath: '/images/'
+            }
+        }] 
+      },
+      {
         test: /\.css$/,
         use: [
           'vue-style-loader',
@@ -60,13 +73,6 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
-        }
       }
     ]
   },
