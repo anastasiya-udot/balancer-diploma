@@ -9,7 +9,7 @@ module.exports = {
 				friction: 1 / 30
 			},
 			backgroundStyle: {},
-			movementEnabled: false
+			movementEnabled: true
 		};
 	},
 	methods: {

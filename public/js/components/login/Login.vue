@@ -83,7 +83,7 @@
 			toggleDialogsVisibility() {
 				this.dialogsHidden = !this.dialogsHidden;
 
-				//this.movementEnabled = this.dialogsHidden;
+				this.movementEnabled = this.dialogsHidden;
 			},
 			switchDialogs() {
 				switch (this.currentDialog) {
