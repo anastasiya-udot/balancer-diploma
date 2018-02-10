@@ -8,6 +8,8 @@ require('./middlewares/base')(app);
 require('./routes')(app, router);
 
 app.use('/views', express.static(__dirname + '/views'));
+app.use('/server/views', express.static(__dirname + '/views'));
+app.use('/node_modules', express.static(__dirname + '/../node_modules'));
 
 app.use((req, res, next) => {
 	const err = new Error('Not Found');
