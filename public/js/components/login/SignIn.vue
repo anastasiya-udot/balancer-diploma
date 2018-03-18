@@ -45,6 +45,9 @@
 			onSubmit () {
 
 			}
+		},
+		created() {
+			console.log('created');
 		}
 	}
 </script>

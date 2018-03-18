@@ -3,6 +3,7 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
+const path = require('path');
 
 require('./middlewares/base')(app);
 require('./routes')(app, router);
@@ -10,6 +11,10 @@ require('./routes')(app, router);
 app.use('/views', express.static(__dirname + '/views'));
 app.use('/server/views', express.static(__dirname + '/views'));
 app.use('/node_modules', express.static(__dirname + '/../node_modules'));
+
+global.rootPath = path.join(__dirname, '..');
+
+require('./middlewares/database');
 
 app.use((req, res, next) => {
 	const err = new Error('Not Found');

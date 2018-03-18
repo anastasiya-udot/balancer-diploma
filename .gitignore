@@ -71,3 +71,5 @@ server/views/build.js
 server/views/images
 
 package-lock.json
+
+server/var/data
