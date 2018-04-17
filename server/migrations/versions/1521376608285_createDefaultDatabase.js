@@ -2,11 +2,15 @@ const async = require('async');
 const logger = require('../../utils/logger')();
 
 function createUsersTable(db, next) {
-	db.run('CREATE TABLE users (id, email, password)', (err) => {
+	db.run('CREATE TABLE "user" ( \
+		"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, \
+		"email" VARCHAR(255) NOT NULL UNIQUE, \
+		"password" VARCHAR(255) NOT NULL \
+	)', (err) => {
 		if (err) {
-			return next(`Can't create users table: ${err.message}'`);
+			return next(`Can't create user table: ${err.message}'`);
 		}
-		return next(null, 'Users table was created');
+		return next(null, 'User table was created');
 	});
 }
 

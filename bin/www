@@ -7,6 +7,8 @@
 var app = require('../server/app');
 var debug = require('debug')('balancer-diploma:server');
 var http = require('http');
+const constants = require('../common/constants');
+var SocketService = require('../server/service/socketService');
 
 const logger = require('../server/utils/logger')();
 
@@ -38,7 +40,7 @@ process.on('SIGUSR2', exitHandler);
  * Get port from environment and store in Express.
  */
 
-let port = normalizePort(process.env.PORT || '3000');
+let port = normalizePort(constants.CONNECTION.PORT);
 
 app.set('port', port);
 
@@ -55,6 +57,10 @@ let server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+let socketService = new SocketService();
+
+socketService.attach(server);
 
 /**
  * Normalize a port into a number, string, or false.
