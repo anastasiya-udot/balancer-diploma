@@ -29,10 +29,12 @@
 
 <script>
 	import Form from '../Form.vue';
+	import User from '../../mixin/routes/User.js';
 
 	export default {
 		props: ['form'],
 		extends: Form,
+		mixins: [User],
 		computed: {
 			passwordState() {
 				return this.form.password;
@@ -43,7 +45,15 @@
 		},
 		methods: {
 			onSubmit () {
-
+				this.signIn(this.form)
+				.then(
+					data => {
+						this.loading = false;
+					},
+					err => {
+						console.log(err);
+					}
+				);
 			}
 		}
 	}

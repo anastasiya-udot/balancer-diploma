@@ -26,29 +26,33 @@
 						placeholder="Confirm password">
 				</b-form-input>
 			</b-form-group>
-			<b-button type="submit"
-					:disabled="!confirmPasswordState || !passwordState || !emailState"
-					variant="light">
-					Submit
-			</b-button>
+			<div class="button-loader">
+				<div class="invalid-feedback server">{{errorServerMessage}}</div>
+				<three-dots v-show="loading"></three-dots>
+				<b-button type="submit"
+						:disabled="!confirmPasswordState || !passwordState || !emailState"
+						variant="light">
+						Submit
+				</b-button>
+			</div>
     	</b-form>
 	</div>
 </template>
 
 <script>
 	import Form from '../Form.vue';
+	import validate from '../../../../common/validate';
+	import User from '../../mixin/routes/User';
+	import ThreeDots from '../ThreeDots.vue';
 
 	export default {
 		extends: Form,
 		props: ['form'],
-		data () {
-			return {
-				emailRegexp: new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
-			}
-		},
+		mixins: [User],
+		components: {ThreeDots},
 		computed: {
 			emailValid() {
-				return this.emailRegexp.test(this.form.email);
+				return validate.email(this.form.email);
 			},
 			passwordState() {
 				return this.form.password && this.form.password.length > 4;
@@ -60,11 +64,15 @@
 				return this.form.email && this.emailValid;
 			},
 			passwordInvalidFeedback() {
+				this.errorServerMessage = '';
+
 				if (this.form.password.length <= 4) {
 					return 'Password should be more reliable'
 				}
 			},
 			emailInvalidFeedback() {
+				this.errorServerMessage = '';
+
 				if (!this.emailValid) {
 					return 'Email is invalid';
 				}
@@ -78,7 +86,17 @@
 		},
 		methods: {
 			onSubmit () {
-
+				this.loading = true;
+				this.signUp(this.form)
+				.then(
+					data => {
+						this.loading = false;
+					},
+					res => {
+						this.loading = false;
+						this.errorServerMessage = res.body.message;
+					}
+				);
 			}
 		}
 	}

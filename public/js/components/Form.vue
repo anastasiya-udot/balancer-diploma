@@ -5,7 +5,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      loading: false,
+      errorServerMessage: ''
+    }
+  },
+};
 </script>
 
 <style lang="scss">
@@ -46,10 +53,26 @@ form {
   }
 
   .invalid-feedback {
-	color: #fb788f;
+	  color: #fb788f;
     text-shadow: 1px 1px 2px black, 0 0 1em red;
     font-style: italic;
-	font-weight: 300;
+	  font-weight: 300;
+
+    &.server {
+      display: block;
+      text-align: right;
+    }
+  }
+
+  .button-loader {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    button[type=submit] {
+      margin-left: 10px
+    }
   }
 }
 </style>
