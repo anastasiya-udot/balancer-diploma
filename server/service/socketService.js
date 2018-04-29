@@ -18,6 +18,7 @@ class SocketService {
 
 		socket.on('join', connection => {
 			logger.info('New user connection');
+			socket.emit('graphs', ['hi']);
 		});
 
 		socket.on('error', error => {

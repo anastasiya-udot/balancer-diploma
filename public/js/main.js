@@ -15,7 +15,6 @@ const url = `${conn.PROTOCOL}://${conn.HOST}:${conn.PORT}`;
 Vue.use(BootstrapVue);
 Vue.use(VueRouter);
 Vue.use(VueResource);
-Vue.use(VueSocketIO, socketio(url));
 
 const routes = [
 	{
@@ -24,11 +23,25 @@ const routes = [
 	},
 	{
 		path: '/main',
-		component: Main
+		component: Main,
+		beforeEnter(to, from, next) {
+			Vue.use(VueSocketIO, socketio(url));
+			next();
+		}
 	}
 ];
 
 const router = new VueRouter({ routes });
+
+router.beforeEach((to, from, next) => {
+	if (!localStorage.key('user_id') && to.path !== '/') {
+		return next('/');
+	}
+	if (localStorage.key('user_id') && to.path === '/') {
+		return next('/main');
+	}
+	next();
+});
 
 // eslint-disable-next-line no-unused-vars
 const app = new Vue({

@@ -55,7 +55,7 @@
 			'sign-up': SignUp,
 			'sign-in': SignIn
 		},
-		mixins: [NanoPointer, BackgroundMovement],
+		mixins: [NanoPointer, BackgroundMovement, ],
 		data() {
 			return {
 				signUpForm: {

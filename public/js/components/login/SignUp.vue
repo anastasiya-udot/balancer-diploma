@@ -30,7 +30,7 @@
 				<div class="invalid-feedback server">{{errorServerMessage}}</div>
 				<three-dots v-show="loading"></three-dots>
 				<b-button type="submit"
-						:disabled="!confirmPasswordState || !passwordState || !emailState"
+						:disabled="loading || !confirmPasswordState || !passwordState || !emailState"
 						variant="light">
 						Submit
 				</b-button>
@@ -50,6 +50,12 @@
 		props: ['form'],
 		mixins: [User],
 		components: {ThreeDots},
+		data() {
+			return {
+				loading: false,
+				errorServerMessage: ''
+			}
+		},
 		computed: {
 			emailValid() {
 				return validate.email(this.form.email);
@@ -64,15 +70,11 @@
 				return this.form.email && this.emailValid;
 			},
 			passwordInvalidFeedback() {
-				this.errorServerMessage = '';
-
 				if (this.form.password.length <= 4) {
 					return 'Password should be more reliable'
 				}
 			},
 			emailInvalidFeedback() {
-				this.errorServerMessage = '';
-
 				if (!this.emailValid) {
 					return 'Email is invalid';
 				}
@@ -86,11 +88,13 @@
 		},
 		methods: {
 			onSubmit () {
+				this.errorServerMessage = '';
 				this.loading = true;
 				this.signUp(this.form)
 				.then(
-					data => {
+					res => {
 						this.loading = false;
+						this.saveUserSession(res.body.id);
 					},
 					res => {
 						this.loading = false;

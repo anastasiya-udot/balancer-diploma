@@ -4,6 +4,16 @@ module.exports = {
 		migrations: 'server/var/data/migrations.json'
 	},
 	log: {
-		path: 'server/var/data/common.log'
+		master: {
+			type: 0,
+			path: 'server/var/data/common.log'
+		},
+		proxy: {
+			type: 1,
+			path: 'server/var/data/proxy.log'
+		}
+	},
+	proxy: {
+		port: '8080'
 	}
 };

@@ -60,7 +60,7 @@ form {
 
     &.server {
       display: block;
-      text-align: right;
+      text-align: center;
     }
   }
 
