@@ -8,14 +8,18 @@ export default {
 			return this.$http.post('/sign-up', data);
 		},
 
+		signOut() {
+			return this.$http.post('/sign-out');
+		},
+
 		saveUserSession(userId) {
 			localStorage.setItem('user_id', userId);
-			this.$router.replace({ path: '/main' });
+			this.$router.replace({ name: 'main' });
 		},
 
 		clearUserSession() {
 			localStorage.removeItem('user_id');
-			this.$router.replace({ path: '/' });
+			this.$router.replace({ name: 'label' });
 		}
 	}
 };

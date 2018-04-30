@@ -32,19 +32,18 @@
 </template>
 
 <script>
-	import Form from '../Form.vue';
-	import User from '../../mixin/routes/User.js';
-	import ThreeDots from '../ThreeDots.vue';
+	import Form from '../../Form.vue';
+	import User from '../../../mixin/routes/User.js';
 
 	export default {
-		props: ['form'],
 		extends: Form,
 		mixins: [User],
-		components: {ThreeDots},
 		data() {
 			return {
-				loading: false,
-				errorServerMessage: ''
+				form: {
+					email: '',
+					password: ''
+				}
 			}
 		},
 		computed: {
@@ -76,7 +75,5 @@
 </script>
 
 <style scoped lang="scss">
-	form {
-		margin-bottom: 60px;
-	}
+
 </style>

@@ -43,4 +43,10 @@ module.exports = function(app) {
 			});
 		});
 	});
+
+
+	app.post('/sign-out', (req, res) => {
+		req.logout();
+		res.redirect('/');
+	});
 };

@@ -5,7 +5,10 @@
 </template>
 
 <script>
+import ThreeDots from './ThreeDots.vue';
+
 export default {
+  components: {ThreeDots},
   data() {
     return {
       loading: false,

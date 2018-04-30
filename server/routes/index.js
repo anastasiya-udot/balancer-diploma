@@ -18,14 +18,12 @@ module.exports = function(app) {
 	let baseDir = path.join(__dirname, 'rest');
 	let routers = [];
 
-	app.get('/', function(req, res, next) {
+	app.get(['/', '/auth/*', '/main'], function(req, res, next) {
 		res.sendFile('index.html', { root: path.join(__dirname, '../../server/views') });
 	});
 
 	app.use(function(req, res, next) {
-		if (!req.session.user &&
-			req.path.indexOf('/node_modules') === -1 &&
-			req.path.indexOf('/views') === -1) {
+		if (!req.session.user && req.path.indexOf('/api') !== -1) {
 			return next(new ServerError(401));
 		}
 		next();

@@ -40,20 +40,20 @@
 </template>
 
 <script>
-	import Form from '../Form.vue';
-	import validate from '../../../../common/validate';
-	import User from '../../mixin/routes/User';
-	import ThreeDots from '../ThreeDots.vue';
+	import Form from '../../Form.vue';
+	import validate from '../../../../../common/validate';
+	import User from '../../../mixin/routes/User';
 
 	export default {
 		extends: Form,
-		props: ['form'],
 		mixins: [User],
-		components: {ThreeDots},
 		data() {
 			return {
-				loading: false,
-				errorServerMessage: ''
+				form: {
+					email: '',
+					password: '',
+					confirmPassword: ''
+				}
 			}
 		},
 		computed: {
@@ -83,8 +83,7 @@
 				if (this.form.password !== this.form.confirmPassword) {
 					return 'Passwords does not match'
 				}
-			},
-			
+			}
 		},
 		methods: {
 			onSubmit () {

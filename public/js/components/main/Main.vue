@@ -1,12 +1,25 @@
 <template>
 	<div>
-		<p v-if="isConnected">We're connected to the server!</p>
-		<p>Message from server: {{socketMessage}}</p>
+		<navigation></navigation>
+		<div class="wrapper">
+			<div id="nano-container" class="main-background nano-container">
+				<canvas id="nano-canvas">
+				</canvas>
+				<p>Message from server: {{socketMessage}}</p>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script>
+	import BaseContainer from '../BaseContainer.vue';
+	import Navigation from './Navigation.vue';
+	import NanoPointer from '../../mixin/NanoPointer';
+
 	export default {
+		extends: BaseContainer,
+		components: { Navigation },
+		mixins: [NanoPointer],
 		data() {
 			return {
 				isConnected: false,
@@ -31,6 +44,5 @@
 	}
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
 </style>
