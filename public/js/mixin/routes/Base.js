@@ -1,8 +1,8 @@
 import constants from '../../../../common/constants';
 
 const conn = constants.CONNECTION;
-const Base = {
+const base = {
 	url: `${conn.PROTOCOL}://${conn.HOST}:${conn.PORT}/${conn.PREFIX}`
 };
 
-export default Base;
+export default base;

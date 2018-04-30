@@ -37,8 +37,6 @@
 
 <style scoped lang="scss">
 	.navbar {
-		z-index: 2;
-
 		.main-title {
 			font-size: 1.4em;
 			margin-bottom: 0;
