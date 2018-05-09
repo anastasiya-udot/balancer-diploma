@@ -1,29 +1,28 @@
-let passport = require('passport');
 const ServerError = require('../utils/serverError');
 const logger = require('../utils/logger')();
+const passport = require('passport');
 
 require('./passport');
 
 module.exports = function(app) {
+
 	app.use(passport.initialize());
 	app.use(passport.session());
 
 	app.post('/sign-in', (req, res, next) => {
-		global.serviceLocator.get('userService').authenticate(req.body.email, req.body.password, (err, user) => {
+		passport.authenticate('local', (err, user) => {
 			if (err) {
 				return next(new ServerError(err));
 			}
 
 			logger.info('User %s was authorized', user.email);
 
-			req.login(user, (err) => {
-				if (err) {
-					return next(new ServerError(err));
-				}
-
-				return res.send({ id: global.serviceLocator.get('userService').serializeUser(user) });
+			req.logIn(user, () => {
+				req.session.save(() => {
+					res.redirect('/main/agents-list');
+				});
 			});
-		});
+		})(req, res, next);
 	});
 
 	app.post('/sign-up', (req, res, next) => {

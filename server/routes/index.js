@@ -2,9 +2,13 @@
 const path = require('path');
 const fs = require('fs');
 const logger = require('../utils/logger')();
-const express = require('express');
-const ServerError = require('../utils/serverError');
-let router = express.Router();
+// const express = require('express');
+// const ServerError = require('../utils/serverError');
+// const _ = require('lodash');
+// const PASS_LIST = [
+// 	'/node_modules',
+// 	'/views'
+// ];
 
 function readDirectory(dirname, routersFileName) {
 	return fs.readdirSync(dirname).forEach(function(file) {
@@ -18,30 +22,32 @@ module.exports = function(app) {
 	let baseDir = path.join(__dirname, 'rest');
 	let routers = [];
 
-	app.get(['/', '/auth/*', '/main'], function(req, res, next) {
+	app.get(['/', '/auth/*', '/main/*'], function(req, res, next) {
 		res.sendFile('index.html', { root: path.join(__dirname, '../../server/views') });
 	});
 
 	app.use(function(req, res, next) {
-		if (!req.session.user && req.path.indexOf('/api') !== -1) {
-			return next(new ServerError(401));
-		}
+		logger.info(req.method, req.sessionID, req.originalUrl);
 		next();
 	});
 
-	app.use(function(req, res, next) {
-		logger.verbose(req.method, req.sessionID, req.originalUrl);
-		next();
-	});
+	// app.use(function(req, res, next) {
+	// 	const isApiRequest = _.every(PASS_LIST, url => {
+	// 		return req.path.indexOf(url) === -1;
+	// 	});
+
+	// 	if (!req.isAuthenticated() && isApiRequest) {
+	// 		return next(new ServerError(401));
+	// 	}
+	// 	next();
+	// });
 
 	readDirectory(baseDir, routers);
 
 	routers.forEach((router) => {
 		let route = require(router);
 
-		logger.info('Router initialized: %s %s', path.basename(router, '.js'), route.url);
-		app.use(route.url, route);
+		logger.info('Router initialized: %s %s', path.basename(router, '.js'), route.baseUrl);
+		app.use(route.baseUrl, route);
 	});
-
-	app.use('/', router);
 };

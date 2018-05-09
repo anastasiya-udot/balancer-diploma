@@ -56,6 +56,7 @@ export default {
       width: 10px;
       height: 10px;
       border-radius: 50%;
+      margin-right: 10px;
 
       &.top {
         top: 0;

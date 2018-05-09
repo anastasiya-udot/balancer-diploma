@@ -3,7 +3,7 @@
 		@click="close"
 		v-bind:class="{error: isError, success: isSuccess }">
 		<span>
-			{{headText}}: {{message}}
+			{{headText}} {{messageText}}
 		</span>
 	</div>
 </template>
@@ -20,6 +20,9 @@
 			}
 		},
 		computed: {
+			messageText() {
+				return this.message ? `: ${this.message}` : '';
+			},
 			headText() {
 				if (this.isError) {
 					return 'Error occured';

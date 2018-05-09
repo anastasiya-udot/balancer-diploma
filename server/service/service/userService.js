@@ -103,7 +103,7 @@ class UserService extends BaseService {
 
 	authenticate(email, password, next) {
 		if (!email || !password) {
-			return next(null, false, 'Username and password are required');
+			return next('Username and password are required');
 		}
 
 		this._authenticate(email, password, next);

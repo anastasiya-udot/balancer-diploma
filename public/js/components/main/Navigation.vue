@@ -5,6 +5,10 @@
 		<b-navbar-brand><logo></logo></b-navbar-brand>
 
 		<b-collapse is-nav id="nav_collapse">
+			<b-navbar-nav>
+                <b-nav-item @click="onNewUserClicked">Create new agent</b-nav-item>
+				<b-nav-item @click="onAgentsListClicked">Agents list</b-nav-item>
+			</b-navbar-nav>
 			<b-navbar-nav class="ml-auto">
 				<b-nav-item-dropdown text="Settings" right>
 					<b-dropdown-item href="#">Profile</b-dropdown-item>
@@ -23,6 +27,12 @@
 		components: { Logo },
 		mixins: [Users],
 		methods: {
+			onAgentsListClicked() {
+				this.$router.push({ name: 'agentsList' });
+			},
+			onNewUserClicked() {
+				this.$router.push({ name: 'newAgent' });
+			},
 			onSignOutClick() {
 				this.signOut()
 				.then(

@@ -5,14 +5,19 @@ import BootstrapVue from 'bootstrap-vue';
 import socketio from 'socket.io-client';
 import VueSocketIO from 'vue-socket.io';
 import VModal from 'vue-js-modal';
+import VueCodemirror from 'vue-codemirror';
+
 
 import constants from '../../common/constants';
 
 import Auth from './components/auth/Auth.vue';
-import Main from './components/main/Main.vue';
 import SignIn from './components/auth/views/SignIn.vue';
 import SignUp from './components/auth/views/SignUp.vue';
 import Label from './components/auth/views/Label.vue';
+
+import Main from './components/main/Main.vue';
+import AgentConfiguration from './components/main/content/AgentConfiguration.vue';
+import AgentsList from './components/main/content/AgentsList.vue';
 
 const conn = constants.CONNECTION;
 const url = `${conn.PROTOCOL}://${conn.HOST}:${conn.PORT}`;
@@ -21,6 +26,7 @@ Vue.use(BootstrapVue);
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(VModal, { dialog: true });
+Vue.use(VueCodemirror);
 
 const routes = [
 	{
@@ -48,6 +54,15 @@ const routes = [
 		path: '/main',
 		component: Main,
 		meta: { requiresAuth: true },
+		children: [{
+			name: 'newAgent',
+			path: 'new-agent',
+			component: AgentConfiguration
+		}, {
+			name: 'agentsList',
+			path: 'agents-list',
+			component: AgentsList
+		}],
 		beforeEnter(to, from, next) {
 			Vue.use(VueSocketIO, socketio(url));
 			next();
@@ -65,17 +80,21 @@ router.beforeEach((to, from, next) => {
 		return next('/auth/label');
 	}
 
-	if (to.meta.requiresAuth) {
-		if (!localStorage.key('user_id')) {
-			return next('/auth/label');
-		}
+	if (to.path === '/main') {
+		return next('/main/agents-list');
 	}
 
-	if (!to.meta.requiresAuth) {
-		if (localStorage.key('user_id')) {
-			return next('/main');
-		}
-	}
+	// if (to.meta.requiresAuth) {
+	// 	if (!localStorage.key('user_id')) {
+	// 		return next('/auth/label');
+	// 	}
+	// }
+
+	// if (!to.meta.requiresAuth) {
+	// 	if (localStorage.key('user_id')) {
+	// 		return next('/main');
+	// 	}
+	// }
 	next();
 });
 

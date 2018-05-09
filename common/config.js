@@ -15,5 +15,8 @@ module.exports = {
 	},
 	proxy: {
 		port: '8080'
+	},
+	agents_server: {
+		port: '8443'
 	}
 };

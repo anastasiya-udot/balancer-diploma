@@ -5,6 +5,6 @@ const openInEditor = require('launch-editor-middleware');
 module.exports = function(app) {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: false }));
-	app.use(cookieParser());
+	app.use(cookieParser('lalala'));
 	app.use('/__open-in-editor', openInEditor());
 };

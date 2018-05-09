@@ -8,6 +8,6 @@ module.exports = function(app) {
 
 	app.use((err, req, res, next) => {
 		logger.error(err.message, err.stack);
-		res.status(err.status || 500).send({ message: err.message });
+		res.status(err.httpCode || 500).send({ message: err.message });
 	});
 };

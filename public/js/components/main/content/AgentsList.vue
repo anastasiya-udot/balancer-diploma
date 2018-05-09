@@ -1,14 +1,15 @@
 <template>
 	<div>
-		Hello
+		HELLO
 	</div>
 </template>
 
 <script>
 	export default {
-		
+
 	}
 </script>
 
-<style scoped lang="scss">
+<style scoped>
+
 </style>
