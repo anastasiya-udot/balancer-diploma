@@ -1,5 +1,6 @@
 const io = require('socket.io');
-const logger = require('../utils/logger')();
+const config = require('../../common/config');
+const logger = require('../utils/logger')(config.admin_server.logger.type);
 
 class SocketService {
 

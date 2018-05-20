@@ -1,9 +1,37 @@
 #!/usr/bin/env node
 
-var cluster = require('cluster');
+/* global process __dirname */
+
+const cluster = require('cluster');
+const debug = require('debug')('balancer-diploma:server');
+const path = require('path');
+
+process.on('rejectionHandled', err => {
+	debug(err.message);
+});
+
+process.on('unhandledRejection', err => {
+	debug(err.message);
+});
+
+function exitHandler(code) {
+	debug('Received exit signal%s. (pid %d)', (' ' + code || ''), process.pid);
+}
+
+process.stdin.resume();
+process.on('exit', exitHandler);
+process.on('SIGINT', exitHandler);
+process.on('SIGUSR1', exitHandler);
+process.on('SIGUSR2', exitHandler);
+
+global.rootPath = path.join(__dirname, '..');
 
 if (cluster.isMaster) {
-	require('../server/application');
+	const AdminServer = require('../server/adminServer');
+	const AgentsServer = require('../server/agentsServer');
+
+	global.adminServer = new AdminServer();
+	global.agentsServer = new AgentsServer();
 } else {
-	require('../server/proxy');
+
 }

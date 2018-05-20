@@ -1,5 +1,6 @@
 const async = require('async');
-const logger = require('../../utils/logger')();
+const config = require('../../../common/config');
+const logger = require('../../utils/logger')(config.db.logger.type);
 
 function createUsersTable(db, next) {
 	db.run('CREATE TABLE "user" ( \

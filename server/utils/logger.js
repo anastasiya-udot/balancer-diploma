@@ -30,12 +30,11 @@ function formatterFile(options) {
 function createLogger(type) {
 	let logPath;
 
-	type = type ? type : config.log.master.type;
-
 	switch (type) {
-		case config.log.master.type: logPath = config.log.master.path; break;
-		case config.log.proxy.type: logPath = config.log.proxy.path; break;
-		default: logPath = config.log.master.path;
+		case config.agents_server.logger.type: logPath = config.agents_server.logger.path; break;
+		case config.admin_server.logger.type: logPath = config.admin_server.logger.path; break;
+		case config.proxy_server.logger.type: logPath = config.proxy_server.logger.path; break;
+		case config.db.logger.type: logPath = config.db.logger.path; break;
 	}
 
 	logPath = path.join(global.rootPath, logPath);
@@ -61,7 +60,7 @@ function createLogger(type) {
 	});
 }
 
-module.exports = function(type = config.log.master.type) {
+module.exports = function(type) {
 	if (!loggers[type]) {
 		createLogger(type);
 	}

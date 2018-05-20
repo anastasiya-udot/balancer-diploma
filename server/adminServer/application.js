@@ -2,9 +2,6 @@
 
 const express = require('express');
 const app = express();
-const path = require('path');
-
-global.rootPath = path.join(__dirname, '../..');
 
 require('../middlewares/base')(app);
 require('../middlewares/header')(app);

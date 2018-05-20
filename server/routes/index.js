@@ -1,7 +1,8 @@
 /* global __dirname */
 const path = require('path');
 const fs = require('fs');
-const logger = require('../utils/logger')();
+const config = require('../../common/config');
+const logger = require('../utils/logger')(config.admin_server.logger.type);
 // const express = require('express');
 // const ServerError = require('../utils/serverError');
 // const _ = require('lodash');

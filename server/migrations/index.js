@@ -3,7 +3,7 @@ const fs = require('fs');
 const fsStat = require('fs-extra');
 const path = require('path');
 const async = require('async');
-const logger = require('../utils/logger')();
+const logger = require('../utils/logger')(config.db.logger.type);
 
 const MIGRATIONS_LOG = path.join(global.rootPath, config.db.migrations);
 
