@@ -25,12 +25,24 @@
 				</b-form-group>
 				<b-form-group>
 					<b-row>
-						<b-col sm="2"><label for="name">Agent name:</label></b-col>
-						<b-col sm="4">
+						<b-col sm="3"><label for="name">Agent name:</label></b-col>
+						<b-col sm="9">
 							<b-form-input
 								id="name"
 								v-model="model.name"
 								placeholder="Enter agent name">
+							</b-form-input>
+						</b-col>
+					</b-row>
+				</b-form-group>
+				<b-form-group>
+					<b-row>
+						<b-col sm="3"><label for="name">Server port:</label></b-col>
+						<b-col sm="9">
+							<b-form-input
+								id="name"
+								v-model="model.server_port"
+								placeholder="Enter server port">
 							</b-form-input>
 						</b-col>
 					</b-row>
@@ -89,7 +101,8 @@
 					script: '',
 					name: 'New agent',
 					token: '',
-					server_address: ''
+					balancer_address: '',
+					server_port: ''
 				},
 				scriptMode: 'powershell',
 				selectedOS: 0,
@@ -113,7 +126,11 @@
 		},
 		computed: {
 			canCreateAgent() {
-				return !!this.model.script && !!this.model.name && !!this.model.token && !!this.model.server_address;
+				return !!this.model.script &&
+					!!this.model.name &&
+					!!this.model.token && 
+					!!this.model.balancer_address &&
+					!!this.model.server_port;
 			},
 			codemirrorOptions() {
 				return {
@@ -131,6 +148,7 @@
 			onGenerageConfigClicked() {
 				let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.model));
 				let dlAnchorElem = document.getElementById('downloadAnchorElem');
+				
 				dlAnchorElem.setAttribute("href", dataStr);
 				dlAnchorElem.setAttribute("download", "agent.json");
 				dlAnchorElem.click();
@@ -152,7 +170,7 @@
 			this.getServerAddress()
 			.then(
 				res => {
-					this.model.server_address = res.body.serverAddress
+					this.model.balancer_address = res.body.serverAddress
 				}
 			)
 		}

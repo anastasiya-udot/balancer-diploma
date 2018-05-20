@@ -11,8 +11,8 @@
 			</b-navbar-nav>
 			<b-navbar-nav class="ml-auto">
 				<b-nav-item-dropdown text="Settings" right>
-					<b-dropdown-item href="#">Profile</b-dropdown-item>
-					<b-dropdown-item @click="onSignOutClick">Signout</b-dropdown-item>
+					<b-dropdown-item @click="onEditProfileClicked">Profile</b-dropdown-item>
+					<b-dropdown-item @click="onSignOutClicked">Signout</b-dropdown-item>
 				</b-nav-item-dropdown>
 			</b-navbar-nav>
 		</b-collapse>
@@ -33,7 +33,10 @@
 			onNewUserClicked() {
 				this.$router.push({ name: 'newAgent' });
 			},
-			onSignOutClick() {
+			onEditProfileClicked() {
+				this.$router.push({ name: 'editProfile' });
+			},
+			onSignOutClicked() {
 				this.signOut()
 				.then(
 					res => {

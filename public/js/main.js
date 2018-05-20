@@ -6,7 +6,7 @@ import socketio from 'socket.io-client';
 import VueSocketIO from 'vue-socket.io';
 import VModal from 'vue-js-modal';
 import VueCodemirror from 'vue-codemirror';
-
+import VueCharts from 'vue-chartjs';
 
 import constants from '../../common/constants';
 
@@ -14,10 +14,13 @@ import Auth from './components/auth/Auth.vue';
 import SignIn from './components/auth/views/SignIn.vue';
 import SignUp from './components/auth/views/SignUp.vue';
 import Label from './components/auth/views/Label.vue';
+import ResetPassword from './components/auth/views/ResetPassword.vue';
 
 import Main from './components/main/Main.vue';
 import AgentConfiguration from './components/main/content/AgentConfiguration.vue';
 import AgentsList from './components/main/content/AgentsList.vue';
+import EditProfile from './components/main/content/EditProfile.vue';
+import AgentDetails from './components/main/content/AgentDetails.vue';
 
 const conn = constants.CONNECTION;
 const url = `${conn.PROTOCOL}://${conn.HOST}:${conn.PORT}`;
@@ -27,6 +30,7 @@ Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(VModal, { dialog: true });
 Vue.use(VueCodemirror);
+Vue.use(VueCharts);
 
 const routes = [
 	{
@@ -47,6 +51,11 @@ const routes = [
 			name: 'label',
 			path: 'label',
 			component: Label
+		}, {
+			name: 'resetPassword',
+			path: 'reset-password',
+			component: ResetPassword,
+			props: true
 		}]
 	},
 	{
@@ -62,6 +71,14 @@ const routes = [
 			name: 'agentsList',
 			path: 'agents-list',
 			component: AgentsList
+		}, {
+			name: 'editProfile',
+			path: 'profile',
+			component: EditProfile
+		}, {
+			name: 'details',
+			path: 'details/:id',
+			component: AgentDetails
 		}],
 		beforeEnter(to, from, next) {
 			Vue.use(VueSocketIO, socketio(url));
