@@ -33,5 +33,7 @@ if (cluster.isMaster) {
 	global.adminServer = new AdminServer();
 	global.agentsServer = new AgentsServer();
 } else {
+	// const ProxyServer = require('../server/proxyServer');
 
+	// global.proxyServer = new ProxyServer();
 }

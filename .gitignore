@@ -77,3 +77,6 @@ server/var/data
 documentation
 
 sessions
+
+__pycache__
+*.pyc

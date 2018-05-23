@@ -1,4 +1,8 @@
 import socket
+import utils
+import sys
+
+BUFSIZ = 1024
 
 class SocketService:
 	def __init__(self, data):
@@ -6,24 +10,53 @@ class SocketService:
 
 		self._target = split_balancer_address[0]
 		self._port = int(split_balancer_address[1])
+		self._message = ''
+
+	def get_port(self):
+		return self._port
+
+	def get_address(self):
+		return self._target
 
 	def start(self):
+		addr = (self._target, self._port)
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.socket.connect((self._target, self._port))
+		
+		try:
+			utils.wait(self._start, event="connect to balancer", addr=addr)
+			print('{} Connected to balancer server {}:{} {}'.format(
+				utils.bcolors.OKGREEN,
+				socket_service.get_address(),
+				socket_service.get_port(),
+				utils.bcolors.ENDC
+			))
+		except Exception:
+			self.failed_connect_exit()
 
-	def send_message(self, msg):
-		sent = self.socket.send(msg)
-		if sent == 0:
-			raise RuntimeError("socket connection broken")
+	def _start(self, addr=None):
+		try:
+			self.socket.connect(addr)
+			print('aaaaaa')
+			return True
+		except Exception:
+			return False
 
-	def receive(self, EOFChar='\036'):
-		msg = ''
-		MSGLEN = 100
-		while len(msg) < MSGLEN:
-			chunk = self.socket.recv(MSGLEN-len(msg))
-			if chunk.find(EOFChar) != -1:
-				msg = msg + chunk
-				return msg
+	def send(self, msg=''):
+		try:
+			utils.wait(self._send, event="send message", msg=msg)
+		except Exception:
+			self.failed_connect_exit()
 
-			msg = msg + chunk
-			return msg
+	def _send(self, msg=''):
+		try:
+			self.socket.send(bytes(msg, "utf8"))
+			return True
+		except Exception:
+			return False
+
+	def failed_connect_exit(self):
+		print('{} Failed to connect to balancer server {}'.format(
+			utils.bcolors.FAIL,
+			utils.bcolors.ENDC
+		))
+		sys.exit()
