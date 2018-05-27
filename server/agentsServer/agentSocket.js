@@ -10,25 +10,30 @@ class AgentSocket extends EventEmitter {
 
 		this._socket.on('data', this._onData.bind(this));
 		this._socket.on('end', this._onEnd.bind(this));
+		this._socket.on('error', this._onError.bind(this));
 	}
 
 	_onData(buf) {
 		const string = buf.toString();
 
-		this._logInfo(`received "${string}"`);
+		this.logInfo(`received "${string}"`);
+	}
+
+	_onError(err) {
+		logger.error(`${this.name}: ${err}`);
 	}
 
 	_onEnd() {
-		this._logInfo('has left the balancer');
+		this.logInfo('has left the balancer');
 		this.emit('end');
 	}
 
 	write(message) {
 		this._socket.write(message);
-		this._logInfo(`wrote "${message}"`);
+		this.logInfo(`wrote "${message}"`);
 	}
 
-	_logInfo(text) {
+	logInfo(text) {
 		logger.info(`${this.name}: ${text}`);
 	}
 

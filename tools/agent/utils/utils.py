@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 
 class bcolors:
     HEADER = '\033[95m'
@@ -10,14 +11,18 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def println(text, color=bcolors.OKBLUE):
+    time = datetime.datetime.now()
+    print('{}: {}{}{}'.format(time.strftime("%Y-%m-%d %H:%M:%S"), color, text, bcolors.ENDC))
+
 async def async_wait(check, interval=1, timeout=None, event='', **kwargs):
     if not timeout:
         timeout = 240
 
     if event:
-        print('Waiting {} sec for {}'.format(timeout, event))
+        println('Waiting {} sec for {}'.format(timeout, event), bcolors.BOLD)
     else:
-        print('Waiting {} sec'.format(timeout))
+        println('Waiting {} sec'.format(timeout), bcolors.BOLD)
 
     explanation_string = ''
 
@@ -32,7 +37,7 @@ async def async_wait(check, interval=1, timeout=None, event='', **kwargs):
 
         if success:
             if event:
-                print('Waiting for {} time: {} seconds'.format(event, time_passed))
+                println('Waiting for {} time: {} seconds'.format(event, time_passed), bcolors.BOLD)
             return
 
         await asyncio.sleep(interval)
@@ -49,3 +54,4 @@ def wait(check, interval=1, timeout=None, event='', **kwargs):
     wait_task = loop.create_task(async_wait(check, interval, timeout, event, **kwargs))
     loop.run_until_complete(wait_task)
     return wait_task.result()
+

@@ -12,8 +12,11 @@ class AgentsSocketServer {
 			let agentSocket = new AgentSocket(socket);
 
 			this.agentsSockets[agentSocket.name] = agentSocket;
-			agentSocket.write('confirm connection');
 
+			agentSocket.on('error', () => {
+				delete this.agentsSockets[agentSocket.name];
+			});
+			agentSocket.write('confirm connection');
 			agentSocket.on('end', () => {
 				delete this.agentsSockets[agentSocket.name];
 			});
