@@ -4,6 +4,9 @@ import json
 import os.path
 from tools.agent_socket_service import AgentSocketService
 from tools.system_monitor import SystemMonitor
+from tools.server_runner import ServerRunner
+
+server_runner = None
 
 def parseJSON(path):
 	if os.path.isfile(path) and path.endswith('.json'):
@@ -23,8 +26,13 @@ def main():
 	if args.test == 'local':
 		connect_to_server = False
 
-	socket_service = AgentSocketService(data, system_monitor, connect_to_server)
-	socket_service.start_activity()
+	try:
+		server_runner = ServerRunner(data)
+		socket_service = AgentSocketService(data, system_monitor, connect_to_server)
+		socket_service.start_activity()
+	except KeyboardInterrupt:
+		server_runner.kill_process()
+
 
 if __name__ == "__main__":
     sys.exit(main())

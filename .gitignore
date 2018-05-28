@@ -79,4 +79,5 @@ documentation
 sessions
 
 __pycache__
+*.sh
 *.pyc
