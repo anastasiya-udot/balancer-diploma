@@ -20,7 +20,7 @@ function listMigrations(alreadyPassed, next) {
 
 		async.eachSeries(versions, (fileName, cb) => {
 			if (alreadyPassed.indexOf(fileName) !== -1) {
-				return next();
+				return cb();
 			}
 
 			let versionPath = path.join(versionsPath, fileName);
@@ -28,12 +28,12 @@ function listMigrations(alreadyPassed, next) {
 
 			version(global.db, (err) => {
 				if (err) {
-					return next(err);
+					return cb(err);
 				}
 
 				alreadyPassed.push(fileName);
 
-				fsStat.writeJson(MIGRATIONS_LOG, alreadyPassed, next);
+				fsStat.writeJson(MIGRATIONS_LOG, alreadyPassed, cb);
 			});
 		}, err => {
 			if (err) {
