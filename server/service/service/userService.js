@@ -2,7 +2,6 @@ const BaseService = require('../baseService');
 const auth = require('passport-local-authenticate');
 const async = require('async');
 const validate = require('../../../common/validate');
-const logger = require('../../utils/logger')();
 
 class UserService extends BaseService {
 
@@ -14,7 +13,10 @@ class UserService extends BaseService {
 	}
 
 	serializeUser(user, next) {
-		next(null, user.id);
+		if (next) {
+			return next(null, user.id);
+		}
+		return user.id;
 	}
 
 	deserializeUser(id, next) {
@@ -37,8 +39,7 @@ class UserService extends BaseService {
 			next => this.create(email, password, next)
 		], (err, user) => {
 			if (err) {
-				logger.error('Failed to register user: %s', err);
-				return next(typeof err === 'string' ? new Error(err) : err);
+				return next(typeof err === 'string' ? err : err.message);
 			}
 			return next(null, user);
 		});
@@ -59,16 +60,21 @@ class UserService extends BaseService {
 	}
 
 	_validatePassword(user, password, next) {
-		auth.verify(password, user.password, this._authOptions, (err, verified) => {
+		auth.hash(password, function(err, hashed) {
 			if (err) {
 				return next(err);
 			}
 
-			if (!verified) {
-				err = new Error('User password is not verified');
-				logger.error(err.message);
-			}
-			return next(err, verified ? user : null);
+			auth.verify(password, { hash: user.password, salt: user.salt }, (err, verified) => {
+				if (err) {
+					return next(err);
+				}
+
+				if (!verified) {
+					err = 'User password is not verified';
+				}
+				return next(err, verified ? user : null);
+			});
 		});
 	}
 
@@ -88,8 +94,7 @@ class UserService extends BaseService {
 			(user, next) => this._validatePassword(user, password, next)
 		], (err, user) => {
 			if (err) {
-				logger.error('Failed to authenticate user: %s', err);
-				return next(null, false, { message: typeof err === 'string' ? err : err.toSting() });
+				return next(typeof err === 'string' ? err : err.message, false);
 			}
 
 			return next(null, user);
@@ -98,9 +103,7 @@ class UserService extends BaseService {
 
 	authenticate(email, password, next) {
 		if (!email || !password) {
-			return next(null, false, {
-				message: 'Username and password are required'
-			});
+			return next('Username and password are required');
 		}
 
 		this._authenticate(email, password, next);
@@ -114,15 +117,14 @@ class UserService extends BaseService {
 
 			let user = {
 				email: email,
-				password: hashed.hash
+				password: hashed.hash,
+				salt: hashed.salt
 			};
 
 			super.create(user, (err, users) => {
 				if (err) {
 					return next(err);
 				}
-
-				logger.info('User %s was created', users[0].email);
 
 				return next(null, users[0]);
 			});

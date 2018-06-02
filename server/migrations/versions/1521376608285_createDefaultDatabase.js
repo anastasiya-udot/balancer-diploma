@@ -1,11 +1,13 @@
 const async = require('async');
-const logger = require('../../utils/logger')();
+const config = require('../../../common/config');
+const logger = require('../../utils/logger')(config.db.logger.type);
 
 function createUsersTable(db, next) {
 	db.run('CREATE TABLE "user" ( \
 		"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, \
 		"email" VARCHAR(255) NOT NULL UNIQUE, \
-		"password" VARCHAR(255) NOT NULL \
+		"password" VARCHAR(255) NOT NULL, \
+		"salt" VARCHAR(255) NOT NULL \
 	)', (err) => {
 		if (err) {
 			return next(`Can't create user table: ${err.message}'`);

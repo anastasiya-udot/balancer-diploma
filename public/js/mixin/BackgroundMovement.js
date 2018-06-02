@@ -9,7 +9,8 @@ module.exports = {
 				friction: 1 / 30
 			},
 			backgroundStyle: {},
-			movementEnabled: true
+			movementEnabled: true,
+			forceDisabled: true
 		};
 	},
 	methods: {
@@ -39,7 +40,7 @@ module.exports = {
 
 		updateMovement(event) {
 
-			if (!this.movementEnabled) {
+			if (!this.movementEnabled || this.forceDisabled) {
 				return;
 			}
 

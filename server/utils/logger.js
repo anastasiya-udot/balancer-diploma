@@ -4,9 +4,7 @@ const config = require('../../common/config');
 const path = require('path');
 const fs = require('fs-extra');
 
-const LOG_PATH = path.join(global.rootPath, config.log.path);
-
-let logger;
+let loggers = {};
 
 function timestamp() {
 	const date = new Date();
@@ -29,14 +27,24 @@ function formatterFile(options) {
 }
 
 
-function createLogger() {
-	fs.ensureFileSync(LOG_PATH);
+function createLogger(type) {
+	let logPath;
 
-	logger = new (winston.Logger)({
+	switch (type) {
+		case config.agents_server.logger.type: logPath = config.agents_server.logger.path; break;
+		case config.admin_server.logger.type: logPath = config.admin_server.logger.path; break;
+		case config.proxy_server.logger.type: logPath = config.proxy_server.logger.path; break;
+		case config.db.logger.type: logPath = config.db.logger.path; break;
+	}
+
+	logPath = path.join(global.rootPath, logPath);
+	fs.ensureFileSync(logPath);
+
+	loggers[type] = new (winston.Logger)({
 		transports: [
 			new winston.transports.File({
 				timestamp: timestamp,
-				filename: LOG_PATH,
+				filename: logPath,
 				formatter: formatterFile,
 				level: 'debug',
 				name: 'common',
@@ -52,10 +60,10 @@ function createLogger() {
 	});
 }
 
-module.exports = function() {
-	if (!logger) {
-		createLogger();
+module.exports = function(type) {
+	if (!loggers[type]) {
+		createLogger(type);
 	}
 
-	return logger;
+	return loggers[type];
 };

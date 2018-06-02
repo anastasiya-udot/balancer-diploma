@@ -1,5 +1,6 @@
 const io = require('socket.io');
-const logger = require('../utils/logger')();
+const config = require('../../common/config');
+const logger = require('../utils/logger')(config.admin_server.logger.type);
 
 class SocketService {
 
@@ -18,6 +19,7 @@ class SocketService {
 
 		socket.on('join', connection => {
 			logger.info('New user connection');
+			socket.emit('graphs', ['hi']);
 		});
 
 		socket.on('error', error => {

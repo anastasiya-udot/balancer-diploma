@@ -1,15 +1,7 @@
 <template>
 	<div class="form">
 		<b-form @submit.prevent="onSubmit" novalidate>
-			<h3>Sign up</h3>
-			<b-form-group :invalid-feedback="emailInvalidFeedback">
-				<b-form-input
-						type="email"
-						v-model.trim="form.email"
-						:state="emailState"
-						placeholder="Enter email">
-				</b-form-input>
-			</b-form-group>
+			<h3>Reset password</h3>
 			<b-form-group :invalid-feedback="passwordInvalidFeedback">
 				<b-form-input
 						type="password"
@@ -30,7 +22,7 @@
 				<div class="invalid-feedback server">{{errorServerMessage}}</div>
 				<three-dots v-show="loading"></three-dots>
 				<b-button type="submit"
-						:disabled="!confirmPasswordState || !passwordState || !emailState"
+						:disabled="loading || !confirmPasswordState || !passwordState || !emailState"
 						variant="light">
 						Submit
 				</b-button>
@@ -40,20 +32,22 @@
 </template>
 
 <script>
-	import Form from '../Form.vue';
-	import validate from '../../../../common/validate';
-	import User from '../../mixin/routes/User';
-	import ThreeDots from '../ThreeDots.vue';
+	import Form from '../../Form.vue';
+	import validate from '../../../../../common/validate';
+	import User from '../../../mixin/routes/User';
 
 	export default {
 		extends: Form,
-		props: ['form'],
 		mixins: [User],
-		components: {ThreeDots},
+		data() {
+			return {
+				form: {
+					password: '',
+					confirmPassword: ''
+				}
+			}
+		},
 		computed: {
-			emailValid() {
-				return validate.email(this.form.email);
-			},
 			passwordState() {
 				return this.form.password && this.form.password.length > 4;
 			},
@@ -64,39 +58,19 @@
 				return this.form.email && this.emailValid;
 			},
 			passwordInvalidFeedback() {
-				this.errorServerMessage = '';
-
 				if (this.form.password.length <= 4) {
 					return 'Password should be more reliable'
-				}
-			},
-			emailInvalidFeedback() {
-				this.errorServerMessage = '';
-
-				if (!this.emailValid) {
-					return 'Email is invalid';
 				}
 			},
 			checkPasswordsInvalidFeedback() {
 				if (this.form.password !== this.form.confirmPassword) {
 					return 'Passwords does not match'
 				}
-			},
-			
+			}
 		},
 		methods: {
 			onSubmit () {
-				this.loading = true;
-				this.signUp(this.form)
-				.then(
-					data => {
-						this.loading = false;
-					},
-					res => {
-						this.loading = false;
-						this.errorServerMessage = res.body.message;
-					}
-				);
+
 			}
 		}
 	}

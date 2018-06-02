@@ -1,20 +1,14 @@
-const logger = require('../utils/logger')();
+const config = require('../../common/config');
+const logger = require('../utils/logger')(config.admin_server.logger.type);
+const ServerError = require('../utils/serverError');
 
 module.exports = function(app) {
 	app.use((req, res, next) => {
-		const err = new Error('Not Found');
-
-		err.status = 404;
-		next(err);
+		next(new ServerError(404));
 	});
 
-	app.use((err, req, res) => {
-		res.locals.message = err.message;
-		res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-		logger.error(err);
-
-		res.status(err.status || 500).send({ message: err.message });
-		res.render('error');
+	app.use((err, req, res, next) => {
+		logger.error(err.message, err.stack);
+		res.status(err.httpCode || 500).send({ message: err.message });
 	});
 };

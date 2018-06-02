@@ -1,5 +1,5 @@
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 const userService = global.serviceLocator.get('userService');
 
 passport.use(new LocalStrategy({

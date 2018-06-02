@@ -1,121 +1,39 @@
 #!/usr/bin/env node
-/* global process */
-/**
- * Module dependencies.
- */
 
-var app = require('../server/app');
-var debug = require('debug')('balancer-diploma:server');
-var http = require('http');
-const constants = require('../common/constants');
-var SocketService = require('../server/service/socketService');
+/* global process __dirname */
 
-const logger = require('../server/utils/logger')();
+const cluster = require('cluster');
+const debug = require('debug')('balancer-diploma:server');
+const path = require('path');
 
 process.on('rejectionHandled', err => {
-	logger.error(err.message);
+	debug(err.message);
 });
 
 process.on('unhandledRejection', err => {
-	logger.error(err.message);
+	debug(err.message);
 });
 
 function exitHandler(code) {
-	logger.info('Received exit signal%s. (pid %d)', (' ' + code || ''), process.pid);
+	debug('Received exit signal%s. (pid %d)', (' ' + code || ''), process.pid);
 }
 
-process.stdin.resume();//so the program will not close instantly
-
-//do something when app is closing
+process.stdin.resume();
 process.on('exit', exitHandler);
-
-//catches ctrl+c event
 process.on('SIGINT', exitHandler);
-
-// catches "kill pid" (for example: nodemon restart)
 process.on('SIGUSR1', exitHandler);
 process.on('SIGUSR2', exitHandler);
 
-/**
- * Get port from environment and store in Express.
- */
+global.rootPath = path.join(__dirname, '..');
 
-let port = normalizePort(constants.CONNECTION.PORT);
+if (cluster.isMaster) {
+	const AdminServer = require('../server/adminServer');
+	const AgentsServer = require('../server/agentsServer');
 
-app.set('port', port);
+	global.adminServer = new AdminServer();
+	global.agentsServer = new AgentsServer();
+} else {
+	// const ProxyServer = require('../server/proxyServer');
 
-/**
- * Create HTTP server.
- */
-
-let server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-let socketService = new SocketService();
-
-socketService.attach(server);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-	var port = parseInt(val, 10);
-
-	if (isNaN(port)) {
-	// named pipe
-		return val;
-	}
-
-	if (port >= 0) {
-	// port number
-		return port;
-	}
-
-	return false;
-}
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error) {
-	if (error.syscall !== 'listen') {
-		throw error;
-	}
-
-	let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
-
-	// handle specific listen errors with friendly messages
-	switch (error.code) {
-		case 'EACCES':
-			logger.error(bind + ' requires elevated privileges');
-			process.exit(1);
-			break;
-		case 'EADDRINUSE':
-			logger.error(bind + ' is already in use');
-			process.exit(1);
-			break;
-		default:
-			throw error;
-	}
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-	let addr = server.address();
-	let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-
-	logger.info('Server started: ', bind);
-	debug('Listening on ' + bind);
+	// global.proxyServer = new ProxyServer();
 }

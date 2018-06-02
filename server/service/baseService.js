@@ -1,4 +1,5 @@
-const logger = require('../utils/logger')();
+const config = require('../../common/config');
+const logger = require('../utils/logger')(config.db.logger.type);
 const _ = require('lodash');
 
 class BaseService {

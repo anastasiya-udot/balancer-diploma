@@ -18,23 +18,34 @@
 						placeholder="Enter password">
 				</b-form-input>
 			</b-form-group>
-			<b-button type="submit"
-					:disabled="!passwordState || !emailState"
-					variant="light">
-					Submit
-			</b-button>
+			<div class="button-loader">
+				<div class="invalid-feedback server">{{errorServerMessage}}</div>
+				<three-dots v-show="loading"></three-dots>
+				<b-button type="submit"
+						:disabled="loading || !passwordState || !emailState"
+						variant="light">
+						Submit
+				</b-button>
+			</div>
 		</b-form>
 	</div>
 </template>
 
 <script>
-	import Form from '../Form.vue';
-	import User from '../../mixin/routes/User.js';
+	import Form from '../../Form.vue';
+	import User from '../../../mixin/routes/User.js';
 
 	export default {
-		props: ['form'],
 		extends: Form,
 		mixins: [User],
+		data() {
+			return {
+				form: {
+					email: '',
+					password: ''
+				}
+			}
+		},
 		computed: {
 			passwordState() {
 				return this.form.password;
@@ -45,13 +56,17 @@
 		},
 		methods: {
 			onSubmit () {
+				this.errorServerMessage = '';
+				this.loading = true;
 				this.signIn(this.form)
 				.then(
-					data => {
+					res => {
 						this.loading = false;
+						this.saveUserSession(res.body.id);
 					},
-					err => {
-						console.log(err);
+					res => {
+						this.loading = false;
+						this.errorServerMessage = res.body.message;
 					}
 				);
 			}
@@ -60,7 +75,5 @@
 </script>
 
 <style scoped lang="scss">
-	form {
-		margin-bottom: 60px;
-	}
+
 </style>

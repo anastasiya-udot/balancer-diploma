@@ -3,16 +3,36 @@ const crypto = require('crypto');
 const MemoryStore = require('memorystore')(session);
 
 module.exports = function(app) {
-	app.use(session({
+	let httpSession = session({
 		secret: crypto.randomBytes(20).toString(),
+		store: new MemoryStore({
+			checkPeriod: 24 * 60 * 60 * 1000
+		}),
+		resave: false,
 		saveUninitialized: false,
 		cookie: {
-			maxAge: 7 * 24 * 60 * 60 * 1000,
 			httpOnly: true
-		},
+		}
+	});
+
+	let httpsSession = session({
+		secret: crypto.randomBytes(20).toString(),
 		store: new MemoryStore({
-			checkPeriod: 24 * 60 * 60 * 100
+			checkPeriod: 24 * 60 * 60 * 1000
 		}),
-		resave: false
-	}));
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			httpOnly: true,
+			secure: true
+		}
+	});
+
+	app.use(function sessionMiddleware(req, res, next) {
+		if (req.protocol === 'https') {
+			return httpsSession(req, res, next);
+		} else {
+			return httpSession(req, res, next);
+		}
+	});
 };

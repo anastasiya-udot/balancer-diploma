@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const logger = require('../utils/logger')();
+const config = require('../../common/config');
+const logger = require('../utils/logger')(config.admin_server.logger.type);
 
 const SERVICES_PATH = path.join(global.rootPath, 'server/service/service');
 
