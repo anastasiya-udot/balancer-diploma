@@ -17,7 +17,7 @@ class ServerRunner:
 			file.close()
 
 		self.start_script()
-		self.check_is_alive()
+		#self.check_is_alive()
 
 	def kill_process(self):
 		subprocess_alive = self.check_is_alive()
@@ -33,11 +33,13 @@ class ServerRunner:
 		return returncode is None
 
 	def start_script(self):
-		try:
-			FNULL = open(os.devnull, 'w')
-			self.server_process = subprocess.Popen([SCRIPT_FILE_PATH], shell=True, stdout=FNULL, )
-			println('Script was successfully launched', bcolors.OKGREEN)
-			return True
-		except subprocess.CalledProcessError:
-			println('Error launching script file', bcolors.FAIL)
-			return False
+		println('Script was successfully launched', bcolors.OKGREEN)
+		return True
+		# try:
+		# 	FNULL = open(os.devnull, 'w')
+		# 	self.server_process = subprocess.Popen([SCRIPT_FILE_PATH], shell=True, stdout=FNULL, )
+		# 	println('Script was successfully launched', bcolors.OKGREEN)
+		# 	return True
+		# except subprocess.CalledProcessError:
+		# 	println('Error launching script file', bcolors.FAIL)
+		# 	return False

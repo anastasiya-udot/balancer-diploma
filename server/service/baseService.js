@@ -4,6 +4,24 @@ const _ = require('lodash');
 
 class BaseService {
 
+	get table() {
+		throw Error('Should be overriden in the child');
+	}
+
+	get services() {
+		return [];
+	}
+
+	constructor(name) {
+		this.name = name;
+	}
+
+	initialize() {
+		this.services.forEach((name) => {
+			this[name] = global.serviceLocator.get(name);
+		});
+	}
+
 	_queryAll(query, next) {
 		global.db.all(query, (err, data) => {
 			if (err) {
@@ -62,7 +80,12 @@ class BaseService {
 		return query;
 	}
 
+	_stringifyForSet(attrs) {
+		return this._stringifyForWhere(attrs);
+	}
+
 	create(attributes, next) {
+		next = next || _.noop;
 		let stringAttrs = this._stringifyForInsert(attributes);
 		let query = `INSERT INTO ${this.table} (${stringAttrs.keys.join(', ')}) VALUES (${stringAttrs.values.join(', ')})`;
 
@@ -72,6 +95,24 @@ class BaseService {
 			}
 			this.getBy({ id: id }, next);
 		});
+	}
+
+	delete(conditions, next) {
+		next = next || _.noop;
+		const stringAttrs = this._stringifyForWhere(conditions);
+		const query = `DELETE FROM ${this.table} WHERE ${stringAttrs.join(' AND ')};`;
+
+		this._queryRun(query, next);
+	}
+
+	update(attributes, conditions, next) {
+		next = next || _.noop;
+		const stringAttrs = this._stringifyForSet(attributes);
+		const stringCondition = this._stringifyForWhere(attributes);
+
+		const query = `UPDATE ${this.table} SET ${stringAttrs.keys.join(', ')} WHERE ${stringCondition.join(' AND ')};`;
+
+		this._queryRun(query, next);
 	}
 
 	getAll(next) {
@@ -86,6 +127,18 @@ class BaseService {
 		let query = `SELECT * FROM ${this.table} WHERE ${stringAttrs.join(' AND ')};`;
 
 		this._queryAll(query, next);
+	}
+
+	_onAddItem(item) {
+		this.create(item.toJSON());
+	}
+
+	_onChangedItem(item) {
+		this.update(item.toJSON(), { id: item.id });
+	}
+
+	_onRemoveItem(item) {
+		this.delete({ id: item.id });
 	}
 }
 

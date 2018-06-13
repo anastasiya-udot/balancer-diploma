@@ -10,8 +10,7 @@
 			"request": "launch",
 			"program": "${workspaceFolder}/tools/agent/agent.py",
 			"args": [
-				"--config", "${workspaceFolder}/tools/agent/agent.json",
-				"--test", "local"
+				"--config", "${workspaceFolder}/tools/agent/agent.json"
 			],
 			"console": "integratedTerminal",
 		},

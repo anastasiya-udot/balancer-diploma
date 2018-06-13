@@ -30,8 +30,8 @@ if (cluster.isMaster) {
 	const AdminServer = require('../server/adminServer');
 	const AgentsServer = require('../server/agentsServer');
 
-	global.adminServer = new AdminServer();
 	global.agentsServer = new AgentsServer();
+	global.adminServer = new AdminServer();
 } else {
 	// const ProxyServer = require('../server/proxyServer');
 

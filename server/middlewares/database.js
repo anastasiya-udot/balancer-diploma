@@ -8,19 +8,22 @@ const migrations = require('../migrations');
 
 const DB_PATH = path.join(global.rootPath, config.db.path);
 
-async.waterfall([
-	next => fs.ensureFile(DB_PATH, next),
-	next => {
-		global.db = new sqlite3.Database(DB_PATH, (err) => {
+module.exports = (next) => {
+	async.waterfall([
+		next => fs.ensureFile(DB_PATH, next),
+		next => {
+			global.db = new sqlite3.Database(DB_PATH, (err) => {
+				return next(err);
+			});
+		},
+		migrations
+	], err => {
+		if (err) {
+			logger.error('Database error: %s', (typeof err) === 'string' ? err : err.message);
+			// eslint-disable-next-line no-undef
 			return next(err);
-		});
-	},
-	migrations
-], err => {
-	if (err) {
-		logger.error('Database error: %s', (typeof err) === 'string' ? err : err.message);
-		// eslint-disable-next-line no-undef
-		process.exit();
-	}
-	logger.info('Connected to the SQlite database');
-});
+		}
+		logger.info('Connected to the SQlite database');
+		next();
+	});
+};

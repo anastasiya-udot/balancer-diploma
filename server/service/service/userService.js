@@ -5,11 +5,16 @@ const validate = require('../../../common/validate');
 
 class UserService extends BaseService {
 
-	constructor() {
-		super();
+	get table() {
+		return 'user';
+	}
 
-		this.table = 'user';
+	constructor(name) {
+		super(name);
+
 		this._authOptions = { digestAlgorithm: 'sha256' };
+
+		return Promise.resolve(this);
 	}
 
 	serializeUser(user, next) {
